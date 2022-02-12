@@ -6,6 +6,7 @@ defmodule Getaways.Accounts.User do
     field :email, :string
     field :password_hash, :string
     field :username, :string
+    field :password, :string, virtual: true
 
     timestamps()
   end
@@ -21,5 +22,15 @@ defmodule Getaways.Accounts.User do
     |> validate_length(:password, min: 6)
     |> unique_constraint(:username)
     |> unique_constraint(:email)
+    |> hash_password()
+  end
+
+  defp hash_password(changeset) do
+    case changeset do
+      %Ecto.Changeset{valid?: true, changes: %{password: password}} ->
+        put_change(changeset, :password_hash, Pbkdf2.hash_pwd_salt(password))
+      _ ->
+        changeset
+    end
   end
 end

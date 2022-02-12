@@ -22,8 +22,8 @@ defmodule Getaways.AccountsFixtures do
       attrs
       |> Enum.into(%{
         email: unique_user_email(),
-        password_hash: "some password_hash",
-        username: unique_user_username()
+        password: "some password",
+        username: unique_user_username(),
       })
       |> Getaways.Accounts.create_user()
 
