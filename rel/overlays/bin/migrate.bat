@@ -1,0 +1,1 @@
+call "%~dp0\getaways" eval Getaways.Release.migrate
