@@ -5,6 +5,7 @@ defmodule Getaways.AccountsTest do
   alias Getaways.Accounts.User
 
   import Getaways.AccountsFixtures
+
   describe "get_user/1" do
     test "returns the user with the given id" do
       user = user_fixture()
@@ -26,8 +27,7 @@ defmodule Getaways.AccountsTest do
 
     test "with invalid data returns error changeset" do
       invalid_attrs = %{@valid_attrs | username: nil}
-      assert {:error, %Ecto.Changeset{}} =
-        Accounts.create_user(invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_user(invalid_attrs)
     end
   end
 end

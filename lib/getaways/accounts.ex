@@ -1,6 +1,6 @@
 defmodule Getaways.Accounts do
   @moduledoc """
-  The Accounts context.
+  The Accounts context: public interface for account functionality.
   """
 
   import Ecto.Query, warn: false
@@ -19,19 +19,37 @@ defmodule Getaways.Accounts do
 
   @doc """
   Creates a user.
-
-  ## Examples
-
-      iex> create_user(%{field: value})
-      {:ok, %User{}}
-
-      iex> create_user(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
   """
-  def create_user(attrs \\ %{}) do
+  def create_user(attrs) do
     %User{}
     |> User.changeset(attrs)
     |> Repo.insert()
+  end
+
+  @doc """
+  Authenticates a user.
+
+  Returns `{:ok, user}` if a user exists with the given username
+  and the password is valid. Otherwise, `:error` is returned.
+  """
+  def authenticate(username, password) do
+    user = Repo.get_by(User, username: username)
+
+    with %{password_hash: password_hash} <- user,
+         true <- Pbkdf2.verify_pass(password, password_hash) do
+      {:ok, user}
+    else
+      _ -> :error
+    end
+  end
+
+  # Dataloader
+
+  def datasource() do
+    Dataloader.Ecto.new(Repo, query: &query/2)
+  end
+
+  def query(queryable, _) do
+    queryable
   end
 end

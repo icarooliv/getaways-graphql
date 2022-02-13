@@ -8,6 +8,9 @@ defmodule Getaways.Accounts.User do
     field :username, :string
     field :password, :string, virtual: true
 
+    has_many :bookings, Getaways.Vacation.Booking
+    has_many :reviews, Getaways.Vacation.Review
+
     timestamps()
   end
 
@@ -29,6 +32,7 @@ defmodule Getaways.Accounts.User do
     case changeset do
       %Ecto.Changeset{valid?: true, changes: %{password: password}} ->
         put_change(changeset, :password_hash, Pbkdf2.hash_pwd_salt(password))
+
       _ ->
         changeset
     end
