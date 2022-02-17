@@ -3,10 +3,18 @@ defmodule GetawaysWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug GetawaysWeb.Plugs.SetCurrentUser
   end
 
-  scope "/api", GetawaysWeb do
+  scope "/" do
     pipe_through :api
+
+    forward "/api", Absinthe.Plug,
+      schema: GetawaysWeb.Schema.Schema
+
+    forward "/graphiql", Absinthe.Plug.GraphiQL,
+      schema: GetawaysWeb.Schema.Schema,
+      socket: GetawaysWeb.UserSocket
   end
 
   # Enables LiveDashboard only for development
